@@ -1,6 +1,5 @@
 
 from selenium import webdriver
-from selenium.webdriver.common.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,11 +9,11 @@ from apscheduler.schedulers.background import BlockingScheduler
 from time import sleep
 import random
 
-# collecting discord info from text file
+# collecting discord credentials from text file
 with open('account.txt') as f:
     email = f.readline().strip()
     password = f.readline().strip()
-    channel = f.readline().strip()
+    channel_link = f.readline().strip()
     message = f.readline().strip()
 email = email
 password = password
@@ -25,8 +24,7 @@ driver_options = Options()
 arguments = [
     '--no-sandbox',
     '--disable-dev-shm-usage',
-    '--disable-blink-features=AutomationControlled',
-    '--start-maximized',
+    '--disable-blink-features=AutomationControlled'
 ]
 experimental_options = {
     'excludeSwitches': ['enable-automation', 'enable-logging'],
@@ -39,8 +37,7 @@ for key, value in experimental_options.items():
     driver_options.add_experimental_option(key, value)
 
 # initiating browser
-s = Service('C:/chromedriver/chromedriver.exe')
-driver = webdriver.Chrome(service=s, options=driver_options)
+driver = webdriver.Chrome(options=driver_options)
 
 # loging into discord
 driver.get('https://discord.com/login')
@@ -54,7 +51,7 @@ print('successfully logged in!')
 
 
 # redirecting to specific channel after login
-driver.get(channel)
+driver.get(channel_link)
 print('redicting to channel...')
 sleep(60)
 
@@ -66,7 +63,7 @@ def send_msg():
     try:
         # finding chatbox and typing the message there
         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.CLASS_NAME,'editor-H2NA06'))).send_keys(message, Keys.ENTER)
-        scheduled_time = random.randrange(62,80)
+        scheduled_time = random.randrange(3, 5)
         print(f'[success] {scheduled_time}')
     except:
         driver.refresh()
